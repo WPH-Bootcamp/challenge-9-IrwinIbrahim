@@ -117,6 +117,18 @@ button:focus-visible {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  /* Tambahkan animasi slideDown di global CSS (misalnya index.css atau tailwind config) */
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  .animate-slideDown {
+    animation: slideDown 0.5s ease-out forwards;
+  }
 }
 
 @layer base {

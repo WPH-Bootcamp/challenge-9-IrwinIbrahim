@@ -24,14 +24,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
 
             {/* Protected routes */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/" element={<HomePage />} />
             <Route
               path="/cart"
               element={

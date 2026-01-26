@@ -1,8 +1,9 @@
 export type RestaurantCategory =
   | "best-seller"
-  | "All-Restaurant"
+  | "recommended"
   | "delivery"
   | "lunch"
+  | "discount"
   | "nearby";
 
 export interface SampleMenu {
@@ -34,7 +35,6 @@ export interface Restaurant {
   distance: number;
 }
 
-// Response API untuk restaurants & recommendations
 export interface RestaurantsResponse {
   success: boolean;
   data: {

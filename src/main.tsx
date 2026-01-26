@@ -6,10 +6,14 @@ import { queryClient } from "./services/queries/client";
 import App from "./App";
 import "./index.css";
 
+import { AuthProvider } from "@/context/AuthContext";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </QueryClientProvider>
   </Provider>,
 );
