@@ -4,35 +4,33 @@ import {
   FaLinkedinIn,
   FaTiktok,
 } from "react-icons/fa";
-import burgerBanner from "@/assets/images/foody.svg";
+import burgerBanner from "@/assets/images/logomerah.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white mt-12 text-sm">
+    <footer className="bg-black text-white mt-4 text-sm">
       <div className="max-w-screen-xl mx-auto px-3 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Branding & Deskripsi */}
           <div className="md:col-span-2">
-            {/* Logo + Tulisan Foody */}
             <div className="flex items-center gap-2 mb-2">
               <img
                 src={burgerBanner}
                 alt="Foody Logo"
-                className="w-13 h-13 object-contain"
+                className="w-8 h-8 object-contain"
               />
               <h4 className="text-xl font-bold">Foody</h4>
             </div>
 
             <p className="mb-4">
-              Enjoy homemade flavors & chef's signature dishes, freshly prepared every day.
-              Order online or visit our nearest branch.
+              Enjoy homemade flavors & chef's signature dishes, freshly prepared
+              every day. Order online or visit our nearest branch.
             </p>
 
             <p className="font-semibold mb-2">Follow on Social Media</p>
             <div className="flex gap-3">
               <a
                 href="#"
-                aria-label="Facebook"border-gray
+                aria-label="Facebook"
                 className="w-8 h-8 flex items-center justify-center rounded-full   text-white hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300"
               >
                 <FaFacebookF />

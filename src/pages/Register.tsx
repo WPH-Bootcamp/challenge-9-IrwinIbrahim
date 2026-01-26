@@ -6,7 +6,7 @@ import { Label } from "@/ui/label";
 import axios from "axios";
 
 import burgerBanner from "@/assets/images/burger-banner.svg";
-import foodyLogo from "@/assets/images/foody.svg"; 
+import foodyLogo from "@/assets/images/foody.svg";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signup"); // indikator aktif
+  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signup");
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen">      
+    <div className="flex min-h-screen">
       <div
         className="hidden md:flex md:w-1/2 bg-cover bg-center"
         style={{ backgroundImage: `url(${burgerBanner})` }}
@@ -45,7 +45,7 @@ export default function RegisterPage() {
       {/* Right Form Section */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-10">
         <div className="w-full max-w-xl space-y-8">
-          
+          {/* Logo + Text rata kiri */}
           <div className="flex justify-start">
             <img
               src={foodyLogo}
@@ -93,7 +93,9 @@ export default function RegisterPage() {
           {/* Form */}
           <form className="space-y-6" onSubmit={handleRegister}>
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-lg">Name</Label>
+              <Label htmlFor="name" className="text-lg">
+                Name
+              </Label>
               <Input
                 id="name"
                 type="text"
@@ -104,7 +106,9 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-lg">Email</Label>
+              <Label htmlFor="email" className="text-lg">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -116,7 +120,9 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-lg">Phone</Label>
+              <Label htmlFor="phone" className="text-lg">
+                Phone
+              </Label>
               <Input
                 id="phone"
                 type="tel"
@@ -128,7 +134,9 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-lg">Password</Label>
+              <Label htmlFor="password" className="text-lg">
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
