@@ -1,26 +1,34 @@
-// src/pages/Home.tsx
 import { useState, useEffect } from "react";
 import { useRestaurantsQuery } from "@/services/queries/useRestaurantsQuery";
 import RestaurantList from "@/components/RestaurantList";
 import HeroBanner from "@/components/HeroBanner";
 import Footer from "@/components/Footer";
+import TabCategoryFilter from "@/components/TabCategoryFilter";
+import EmptyState from "@/components/EmptyState";
+import { useAppSelector } from "@/features/hooks";
 import type { RestaurantCategory } from "@/types";
+import RestaurantSkeleton from "@/components/RestaurantSkeleton";
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] =
-    useState<RestaurantCategory>("all-restaurant");
+  const selectedCategory =
+    useAppSelector((state) => state.filters.category) ?? "all-restaurant";
 
-  // Nearby location
   const [userLat, setUserLat] = useState<number | null>(null);
   const [userLong, setUserLong] = useState<number | null>(null);
 
-  // Pagination
   const [page, setPage] = useState(1);
   const limit = 20;
-  const range = 10; // untuk nearby
+  const range = 10;
 
-  // Search keyword
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
 
   // Ambil lokasi browser jika kategori nearby
   useEffect(() => {
@@ -37,25 +45,36 @@ export default function Home() {
     }
   }, [selectedCategory]);
 
-  // Tentukan query params
-  const queryParams =
-    selectedCategory === "nearby"
-      ? {
-          category: "nearby" as RestaurantCategory,
-          lat: userLat ?? 0, // default 0 kalau belum ada
-          long: userLong ?? 0,
-          range,
-          limit,
-          search: search || undefined,
-        }
-      : {
-          category: selectedCategory,
-          page,
-          limit,
-          search: search || undefined,
-        };
+  // Tentukan query params dengan fallback otomatis
+  let queryParams: any;
+  if (selectedCategory === "nearby") {
+    if (userLat != null && userLong != null) {
+      queryParams = {
+        category: "nearby" as RestaurantCategory,
+        lat: userLat,
+        long: userLong,
+        range,
+        limit,
+        search: debouncedSearch || undefined,
+      };
+    } else {
+      // fallback otomatis ke recommended
+      queryParams = {
+        category: "recommended" as RestaurantCategory,
+        page,
+        limit,
+        search: debouncedSearch || undefined,
+      };
+    }
+  } else {
+    queryParams = {
+      category: selectedCategory as RestaurantCategory,
+      page,
+      limit,
+      search: debouncedSearch || undefined,
+    };
+  }
 
-  // Query
   const {
     data: restaurants,
     isLoading,
@@ -66,36 +85,54 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <HeroBanner search={search} setSearch={setSearch} />
 
+      {/* Category Filter */}
+      <div className="px-16">
+        <TabCategoryFilter />
+      </div>
+
       {/* Konten utama */}
       <div className="p-4 flex-grow">
-        <h1 className="text-2xl font-bold mb-4">Recomended</h1>
+        <div className="flex-grow px-12 py-6">
+          <h1 className="text-2xl font-bold mb-4">Recommended</h1>
 
-        {/* Pilih kategori */}
-        <div className="flex gap-2 mb-4 flex-wrap">
-          {["all-restaurant", "best-seller", "nearby", "delivery", "lunch"].map(
-            (cat) => (
-              <button
-                key={cat}
-                className={`px-4 py-2 rounded ${
-                  selectedCategory === cat
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-                onClick={() => {
-                  setSelectedCategory(cat as RestaurantCategory);
-                  setPage(1); // reset page saat ganti kategori
-                }}
-              >
-                {cat}
-              </button>
-            ),
+          {isLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <RestaurantSkeleton key={i} />
+              ))}
+            </div>
+          )}
+
+          {isError && (
+            <EmptyState
+              title="Error loading restaurants"
+              description="Please try again later."
+            />
+          )}
+
+          {/* Nearby tanpa lokasi → fallback ke recommended */}
+          {selectedCategory === "nearby" &&
+            (userLat === null || userLong === null) &&
+            !isLoading && (
+              <EmptyState
+                title="Location not available"
+                description="Showing recommended restaurants instead."
+              />
+            )}
+
+          {/* Data ada */}
+          {!isLoading && restaurants && restaurants.length > 0 && (
+            <RestaurantList data={restaurants} />
+          )}
+
+          {/* Data kosong */}
+          {!isLoading && restaurants && restaurants.length === 0 && (
+            <EmptyState
+              title="No restaurants found"
+              description="Try adjusting your search or filters to discover more options."
+            />
           )}
         </div>
-
-        {/* Konten */}
-        {isLoading && <p>Loading...</p>}
-        {isError && <p>Error loading restaurants.</p>}
-        {!isLoading && restaurants && <RestaurantList data={restaurants} />}
 
         {/* Pagination sederhana */}
         {selectedCategory !== "nearby" &&

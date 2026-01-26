@@ -5,22 +5,14 @@ interface Props {
 }
 
 export default function RestaurantCard({ restaurant }: Props) {
-  const {
-    name,
-    star,
-    place,
-    logo,
-    category,
-    reviewCount,
-    distance,
-  } = restaurant;
+  const { name, star, place, logo, category, reviewCount, distance } =
+    restaurant;
 
   return (
-    <div className="border rounded-xl p-12 shadow hover:shadow-md transition flex items-start gap-4">
-      {/* Logo di kiri */}
+    <div className="border rounded-xl p-6 shadow hover:shadow-md transition flex items-start gap-4">
       <img
         src={logo}
-        alt={name}
+        alt={`${name} logo`}
         className="w-16 h-16 object-contain"
       />
 

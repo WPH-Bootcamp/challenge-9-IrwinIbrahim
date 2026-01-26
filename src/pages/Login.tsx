@@ -6,6 +6,7 @@ import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import burgerBanner from "@/assets/images/burger-banner.svg";
 import foodyLogo from "@/assets/images/foody.svg";
@@ -13,26 +14,50 @@ import foodyLogo from "@/assets/images/foody.svg";
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("john.doe@gmail.com");
-  const [password, setPassword] = useState("john.doe123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
-  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin"); // indikator aktif
+  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
-  const { setToken } = useAuth();
+  const { setToken, setUser } = useAuth(); // tambahkan setUser
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newErrors: typeof errors = {};
+    if (!email.includes("@")) newErrors.email = "Email must be valid";
+    if (password.length < 6)
+      newErrors.password = "Password must be at least 6 characters";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       const response = await axios.post(`${API_BASE}/api/auth/login`, {
         email,
         password,
       });
       const token = response.data?.data?.token;
+      const user = response.data?.data?.user;
+
       if (token) {
-        remember
-          ? localStorage.setItem("token", token)
-          : sessionStorage.setItem("token", token);
+        if (remember) {
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user)); // simpan user ke localStorage
+        } else {
+          sessionStorage.setItem("token", token);
+          sessionStorage.setItem("user", JSON.stringify(user)); // simpan user ke sessionStorage
+        }
+
         setToken(token);
+        setUser(user); // simpan user ke context
         navigate("/");
       } else {
         alert("Token tidak ditemukan di response");
@@ -49,8 +74,10 @@ export default function LoginPage() {
         style={{ backgroundImage: `url(${burgerBanner})` }}
       />
 
+      {/* Right Form Section */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-10">
         <div className="w-full max-w-xl space-y-8">
+          {/* Logo + Text rata kiri */}
           <div className="flex justify-start">
             <img
               src={foodyLogo}
@@ -98,6 +125,7 @@ export default function LoginPage() {
 
           {/* Form */}
           <form className="space-y-6" onSubmit={handleLogin}>
+            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-lg">
                 Email
@@ -107,32 +135,71 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="john.doe@gmail.com"
                 autoComplete="email"
                 required
-                className="text-lg py-3 px-4"
+                className={`text-lg py-3 px-4 ${errors.email ? "border-red-500" : ""}`}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
-            <div className="space-y-2">
+
+            {/* Password + Toggle Eye */}
+            <div className="space-y-2 relative">
               <Label htmlFor="password" className="text-lg">
                 Password
               </Label>
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="john.doe123"
                 autoComplete="current-password"
                 required
                 minLength={6}
-                className="text-lg py-3 px-4"
+                className={`text-lg py-3 px-4 pr-10 ${errors.password ? "border-red-500" : ""}`}
               />
+              <span
+                className="absolute right-3 top-10 cursor-pointer text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password}</p>
+              )}
             </div>
-            <div className="flex items-center space-x-3">
+
+            {/* Checkbox */}
+            <div className="flex items-center gap-3 mt-2">
               <Checkbox
                 id="remember"
                 checked={remember}
                 onCheckedChange={(val) => setRemember(!!val)}
-              />
+                className={`
+                  w-5 h-5 rounded-sm border-2 flex items-center justify-center
+                  ${remember ? "bg-red-600 border-red-600 text-white" : "border-red-600 bg-transparent"}
+                `}
+              >
+                {remember && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                )}
+              </Checkbox>
               <Label htmlFor="remember" className="text-lg">
                 Remember Me
               </Label>
