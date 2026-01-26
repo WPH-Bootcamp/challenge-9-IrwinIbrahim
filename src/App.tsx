@@ -10,6 +10,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/services/queries/client";
 
+// Import AuthProvider dari context
 import { AuthProvider } from "@/context/AuthContext";
 
 function App() {
@@ -18,9 +19,11 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
+            {/* Protected routes */}
             <Route
               path="/"
               element={

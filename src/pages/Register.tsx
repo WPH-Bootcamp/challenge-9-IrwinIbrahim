@@ -6,6 +6,7 @@ import { Label } from "@/ui/label";
 import axios from "axios";
 
 import burgerBanner from "@/assets/images/burger-banner.svg";
+import foodyLogo from "@/assets/images/foody.svg"; 
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -14,6 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signup"); // indikator aktif
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -34,41 +36,75 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left Image Section */}
+    <div className="flex min-h-screen">      
       <div
         className="hidden md:flex md:w-1/2 bg-cover bg-center"
         style={{ backgroundImage: `url(${burgerBanner})` }}
       />
 
       {/* Right Form Section */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6">
-        <div className="w-full max-w-md space-y-6">
-          <h1 className="text-4xl font-bold text-center">Foody</h1>
-          <p className="text-center text-muted-foreground">
-            Create your account <br /> Join us and start ordering!
-          </p>
+      <div className="w-full md:w-1/2 flex items-center justify-center p-10">
+        <div className="w-full max-w-xl space-y-8">
+          
+          <div className="flex justify-start">
+            <img
+              src={foodyLogo}
+              alt="Foody Logo"
+              className="w-40 h-40 object-contain"
+            />
+          </div>
 
-          {/* Tabs */}
-          <div className="flex justify-center gap-4 text-sm font-medium">
-            <Button variant="ghost" onClick={() => navigate("/login")}>Sign In</Button>
-            <Button variant="ghost" className="text-red-600">Sign Up</Button>
+          <div className="space-y-1 text-left">
+            <p className="text-3xl font-semibold">Create your account</p>
+            <p className="text-muted-foreground text-lg">
+              Join us and start ordering!
+            </p>
+          </div>
+
+          {/* Tabs seragam dengan Login */}
+          <div className="flex justify-between gap-4 text-lg font-medium">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setActiveTab("signin");
+                navigate("/login");
+              }}
+              className={`w-1/2 py-3 ${
+                activeTab === "signin"
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-black hover:bg-gray-200"
+              }`}
+            >
+              Sign In
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setActiveTab("signup")}
+              className={`w-1/2 py-3 ${
+                activeTab === "signup"
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-black hover:bg-gray-200"
+              }`}
+            >
+              Sign Up
+            </Button>
           </div>
 
           {/* Form */}
-          <form className="space-y-4" onSubmit={handleRegister}>
+          <form className="space-y-6" onSubmit={handleRegister}>
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="text-lg">Name</Label>
               <Input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                className="text-lg py-3 px-4"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-lg">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -76,10 +112,11 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 required
+                className="text-lg py-3 px-4"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone" className="text-lg">Phone</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -87,10 +124,11 @@ export default function RegisterPage() {
                 onChange={(e) => setPhone(e.target.value)}
                 autoComplete="tel"
                 required
+                className="text-lg py-3 px-4"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-lg">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -99,9 +137,13 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 required
                 minLength={8}
+                className="text-lg py-3 px-4"
               />
             </div>
-            <Button type="submit" className="w-full bg-red-600 text-white hover:bg-red-700">
+            <Button
+              type="submit"
+              className="w-full bg-red-600 text-white hover:bg-red-700 text-lg py-3"
+            >
               Register
             </Button>
           </form>

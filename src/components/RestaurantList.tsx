@@ -1,11 +1,12 @@
 import type { Restaurant } from "@/types";
+import RestaurantCard from "./RestaurantCard";
 
 interface RestaurantListProps {
   data: Restaurant[];
 }
 
 export default function RestaurantList({ data }: RestaurantListProps) {
-  console.log("Rendering RestaurantList with data:", data);
+  console.log("Rendering RestaurantList with data:", data); // 🔹 debug
 
   if (!Array.isArray(data)) {
     console.error("RestaurantList: data is not an array!", data);
@@ -19,21 +20,8 @@ export default function RestaurantList({ data }: RestaurantListProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {data.map((restaurant) => {
-        console.log("Rendering restaurant:", restaurant);
-        return (
-          <div key={restaurant.id} className="p-4 border rounded shadow">
-            <img
-              src={restaurant.logo || "/no-image.png"}
-              alt={restaurant.name}
-              className="w-full h-32 object-cover rounded"
-            />
-            <h2 className="text-lg font-bold mt-2">{restaurant.name}</h2>
-            <p>Category: {restaurant.category}</p>
-            <p>Star: {restaurant.star}</p>
-            <p>Place: {restaurant.place}</p>
-            <p>Distance: {restaurant.distance} km</p>
-          </div>
-        );
+        console.log("Rendering restaurant:", restaurant); // debug per item
+        return <RestaurantCard key={restaurant.id} restaurant={restaurant} />;
       })}
     </div>
   );

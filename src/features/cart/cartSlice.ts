@@ -28,7 +28,7 @@ const cartSlice = createSlice({
     },
     changeQuantity(
       state,
-      action: PayloadAction<{ id: number; quantity: number }>,
+      action: PayloadAction<{ id: number; quantity: number }>
     ) {
       const item = state.items.find((i) => i.id === action.payload.id);
       if (item) item.quantity = action.payload.quantity;

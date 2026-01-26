@@ -1,19 +1,31 @@
 export type RestaurantCategory =
-  | "nearby"
-  | "recommended"
   | "best-seller"
+  | "All-Restaurant"
   | "delivery"
-  | "lunch";
+  | "lunch"
+  | "nearby";
+
+export interface SampleMenu {
+  id: number;
+  foodName: string;
+  price: number;
+  type: string;
+  image: string;
+}
 
 export interface Restaurant {
   id: number;
   name: string;
   star: number;
   place: string;
+  lat: number;
+  long: number;
   logo: string;
   images: string[];
   category: string;
   reviewCount: number;
+  sampleMenus: SampleMenu[];
+  isFrequentlyOrdered: boolean;
   menuCount: number;
   priceRange: {
     min: number;
@@ -22,27 +34,19 @@ export interface Restaurant {
   distance: number;
 }
 
+// Response API untuk restaurants & recommendations
 export interface RestaurantsResponse {
   success: boolean;
   data: {
-    restaurants: Restaurant[];
-    pagination: {
+    restaurants?: Restaurant[];
+    recommendations?: Restaurant[];
+    pagination?: {
       page: number;
       limit: number;
       total: number;
       totalPages: number;
     };
+    message?: string;
   };
-}
-
-export interface RestaurantsQueryParams {
-  location?: string;
-  range?: number;
-  priceMin?: number;
-  priceMax?: number;
-  rating?: number;
-  category?: RestaurantCategory | null;
-  search?: string;
-  page?: number;
-  limit?: number;
+  message?: string;
 }

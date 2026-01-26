@@ -5,29 +5,38 @@ interface Props {
 }
 
 export default function RestaurantCard({ restaurant }: Props) {
+  const {
+    name,
+    star,
+    place,
+    logo,
+    category,
+    reviewCount,
+    distance,
+  } = restaurant;
+
   return (
-    <div className="border rounded-lg p-4 shadow hover:shadow-md transition">
+    <div className="border rounded-xl p-12 shadow hover:shadow-md transition flex items-start gap-4">
+      {/* Logo di kiri */}
       <img
-        src={restaurant.logo}
-        alt={restaurant.name}
-        className="w-16 h-16 mb-2 object-contain"
+        src={logo}
+        alt={name}
+        className="w-16 h-16 object-contain"
       />
 
-      <h3 className="text-lg font-bold">{restaurant.name}</h3>
+      {/* Teks di kanan */}
+      <div className="flex flex-col">
+        <h3 className="text-lg font-bold">{name}</h3>
 
-      <p className="text-sm text-muted-foreground">
-        ⭐ {restaurant.star} · {restaurant.reviewCount} reviews
-      </p>
+        <p className="text-sm text-muted-foreground">
+          ⭐ {star} · {reviewCount} reviews
+        </p>
 
-      <p className="text-sm text-muted-foreground">
-        {restaurant.category} · {restaurant.place}
-        {typeof restaurant.distance === "number" &&
-          ` · ${restaurant.distance.toFixed(1)} km`}
-      </p>
-
-      <button className="mt-2 text-red-600 text-sm underline">
-        Show More
-      </button>
+        <p className="text-sm text-muted-foreground">
+          {category} · {place}
+          {typeof distance === "number" && ` · ${distance.toFixed(1)} km`}
+        </p>
+      </div>
     </div>
   );
 }
